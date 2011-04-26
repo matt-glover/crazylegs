@@ -8,7 +8,7 @@ License:: Distributes under the Apache License, see LICENSE.txt in the source di
 
 Install if you need to:
 
-    gem install gli
+    gem install crazylegs
 
 == Example
 
