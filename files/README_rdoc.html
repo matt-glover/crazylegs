@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>README.rdoc</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="../css/reset.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" />
+    <script src="../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../js/main.js" type="text/javascript" charset="utf-8"></script>
+</head>
+
+<body>     
+    <div class="banner">
+        <h1>
+            README.rdoc
+        </h1>
+        <ul class="files">
+            <li>README.rdoc</li>
+            <li>Last modified: Tue Apr 26 16:10:18 -0400 2011</li>
+        </ul>
+    </div>
+
+    <div id="bodyContent">
+        <div id="content">
+    
+    <div class="description">
+        <h1><a href="../classes/Crazylegs.html">Crazylegs</a> - the hacky 2-legged OAuth Library</h1>
+<table>
+<tr><td valign="top">Author:</td><td>Dave Copeland (<a href="mailto:dave@opower.com">dave@opower.com</a>)
+
+</td></tr>
+<tr><td valign="top">Copyright:</td><td>Copyright &#169; 2010 by Dave Copeland
+
+</td></tr>
+<tr><td valign="top">License:</td><td>Distributes under the Apache License, see LICENSE.txt in the source distro
+
+</td></tr>
+</table>
+<h2>Use</h2>
+<p>
+Install if you need to:
+</p>
+<pre>
+    gem install crazylegs
+</pre>
+<h2>Example</h2>
+<pre>
+    include Crazylegs
+    credentials = Credentials.new(consumer_key,shared_secret)
+    url = SignedURL.new(credentials,&quot;http://scrapi-demo-dev.opower.com/api/customers&quot;,'GET')
+    url['accountNumber'] = '655321'
+    signed_url = url.full_url
+    # signed_url can now be requested of the remote server
+</pre>
+<h3>Seeing WTF is going on</h3>
+<pre>
+    logger = Logger.new(STDERR)
+    logger.level = Logger::DEBUG
+    url = SignedURL.new(credentials,&quot;http://scrapi-demo-dev.opower.com/api/customers&quot;,'GET',logger)
+</pre>
+
+    </div>
+    
+
+    
+
+    
+    
+
+    
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</div>
+    </div>
+  </body>
+</html>

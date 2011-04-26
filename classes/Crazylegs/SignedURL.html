@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Crazylegs::SignedURL</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="../../css/reset.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../../css/main.css" type="text/css" media="screen" />
+    <script src="../../js/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../js/jquery-effect.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../js/main.js" type="text/javascript" charset="utf-8"></script>
+</head>
+
+<body>     
+    <div class="banner">
+        <h1>
+            <span class="type">Class</span> 
+            Crazylegs::SignedURL 
+            
+                <span class="parent">&lt; 
+                    
+                    Object
+                    
+                </span>
+            
+        </h1>
+        <ul class="files">
+            
+            <li><a href="../../files/lib/crazylegs/url_rb.html">lib/crazylegs/url.rb</a></li>
+            
+        </ul>
+    </div>
+    <div id="bodyContent">
+        <div id="content">
+    
+    <div class="description">
+        <p>
+Used to create OAuth-signed URLs that you can then request via other means.
+</p>
+
+    </div>
+    
+
+    
+
+    
+    
+
+    
+    
+    <div class="sectiontitle">Methods</div>
+    <dl class="methods">
+    
+        <dt>#</dt>
+        <dd>
+            <ul>
+                
+                <li><a href="#M000009">[]=</a></li>
+                
+            </ul>
+        </dd>
+    
+        <dt>E</dt>
+        <dd>
+            <ul>
+                
+                <li><a href="#M000007">encode</a>,</li>
+                
+                <li><a href="#M000006">encodeParts</a></li>
+                
+            </ul>
+        </dd>
+    
+        <dt>F</dt>
+        <dd>
+            <ul>
+                
+                <li><a href="#M000011">full_url</a></li>
+                
+            </ul>
+        </dd>
+    
+        <dt>N</dt>
+        <dd>
+            <ul>
+                
+                <li><a href="#M000008">new</a></li>
+                
+            </ul>
+        </dd>
+    
+        <dt>P</dt>
+        <dd>
+            <ul>
+                
+                <li><a href="#M000010">params=</a></li>
+                
+            </ul>
+        </dd>
+    
+    </dl>
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="sectiontitle">Constants</div>
+    <table border='0' cellpadding='5'>
+        
+        <tr valign='top'>
+            <td class="attr-name">READ_ONLY_PARAMS</td>
+            <td>=</td>
+            <td class="attr-value">{       'oauth_consumer_key' =&gt; true,       'oauth_token' =&gt; true,       'oauth_signature_method' =&gt; true,       'oauth_version' =&gt; true,       'oauth_nonce' =&gt; true,       'oauth_timestamp' =&gt; true,     }</td>
+        </tr>
+        
+        
+    </table>
+    
+
+    
+    <div class="sectiontitle">Attributes</div>
+    <table border='0' cellpadding='5'>
+        
+        <tr valign='top'>
+            <td class='attr-rw'>
+                [RW]
+            </td>
+            <td class='attr-name'>logger</td>
+            <td class='attr-desc'><p>
+Modify the logger
+</p></td>
+        </tr>
+        
+    </table>
+    
+
+    
+            <div class="sectiontitle">Class Public methods</div>
+            
+            <div class="method">
+                <div class="title" id="M000007">
+                    
+                    <a name="M000007"></a><b>encode</b>(string)
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Ruby&#8217;s CGI::encode doesn&#8217;t encode spaces correctly
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('M000007_source')" id="l_M000007_source">show</a>
+                        
+                    </p>
+                    <div id="M000007_source" class="dyn-source">
+                        <pre><span class="ruby-comment cmt"># File lib/crazylegs/url.rb, line 34</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">encode</span>(<span class="ruby-identifier">string</span>)
+      <span class="ruby-identifier">string</span>.<span class="ruby-identifier">gsub</span>(<span class="ruby-regexp re">/([^ a-zA-Z0-9_.-]+)/n</span>) <span class="ruby-keyword kw">do</span>
+        <span class="ruby-value str">'%'</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">$1</span>.<span class="ruby-identifier">unpack</span>(<span class="ruby-value str">'H2'</span> <span class="ruby-operator">*</span> <span class="ruby-identifier">$1</span>.<span class="ruby-identifier">size</span>).<span class="ruby-identifier">join</span>(<span class="ruby-value str">'%'</span>).<span class="ruby-identifier">upcase</span>
+      <span class="ruby-keyword kw">end</span>.<span class="ruby-identifier">gsub</span>(<span class="ruby-value str">' '</span>, <span class="ruby-value str">'%20'</span>)
+    <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="M000006">
+                    
+                    <a name="M000006"></a><b>encodeParts</b>(url)
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Encodes each part of this url, accounting for some of the weirdness we are
+dealing with
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('M000006_source')" id="l_M000006_source">show</a>
+                        
+                    </p>
+                    <div id="M000006_source" class="dyn-source">
+                        <pre><span class="ruby-comment cmt"># File lib/crazylegs/url.rb, line 22</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">encodeParts</span>(<span class="ruby-identifier">url</span>)
+      <span class="ruby-identifier">parts</span> = <span class="ruby-identifier">url</span>.<span class="ruby-identifier">split</span>(<span class="ruby-regexp re">/\//</span>).<span class="ruby-identifier">map</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">part</span><span class="ruby-operator">|</span>
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">part</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp re">/^\$/</span>
+          <span class="ruby-identifier">part</span>
+        <span class="ruby-keyword kw">else</span>
+          <span class="ruby-identifier">encode</span>(<span class="ruby-identifier">part</span>)
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-identifier">parts</span>.<span class="ruby-identifier">join</span>(<span class="ruby-value str">'/'</span>)
+    <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="M000008">
+                    
+                    <a name="M000008"></a><b>new</b>(credentials,url,method,logger=nil)
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Create a new <a href="SignedURL.html">SignedURL</a>
+</p>
+<table>
+<tr><td valign="top"><tt>credentails</tt>:</td><td>The <a href="Credentials.html">Credentials</a> available when signing the
+request
+
+</td></tr>
+<tr><td valign="top"><tt>url</tt>:</td><td>String containing the URL (without parameters) to request
+
+</td></tr>
+<tr><td valign="top"><tt>method</tt>:</td><td>The HTTP Request method that will be made, as a String
+
+</td></tr>
+<tr><td valign="top"><tt>logger</tt>:</td><td>a logger where you&#8217;d like to see diagnostics, if omitted will try
+<tt>$logger</tt> and then create one
+
+</td></tr>
+</table>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('M000008_source')" id="l_M000008_source">show</a>
+                        
+                    </p>
+                    <div id="M000008_source" class="dyn-source">
+                        <pre><span class="ruby-comment cmt"># File lib/crazylegs/url.rb, line 49</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">credentials</span>,<span class="ruby-identifier">url</span>,<span class="ruby-identifier">method</span>,<span class="ruby-identifier">logger</span>=<span class="ruby-keyword kw">nil</span>)
+      <span class="ruby-identifier">raise</span> <span class="ruby-constant">ArgumentError</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value str">&quot;credentials is required&quot;</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">credentials</span>.<span class="ruby-identifier">nil?</span>
+      <span class="ruby-identifier">raise</span> <span class="ruby-constant">ArgumentError</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value str">&quot;url is required&quot;</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">url</span>.<span class="ruby-identifier">nil?</span>
+      <span class="ruby-identifier">raise</span> <span class="ruby-constant">ArgumentError</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value str">&quot;method is required&quot;</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">method</span>.<span class="ruby-identifier">nil?</span>
+
+      <span class="ruby-ivar">@credentials</span> = <span class="ruby-identifier">credentials</span>
+
+      <span class="ruby-ivar">@logger</span> = <span class="ruby-identifier">logger</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">$logger</span> <span class="ruby-operator">||</span> <span class="ruby-constant">Logger</span>.<span class="ruby-identifier">new</span>(<span class="ruby-constant">STDOUT</span>)
+
+      <span class="ruby-ivar">@params</span> = {
+        <span class="ruby-value str">'oauth_signature_method'</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value str">'HMAC-SHA1'</span>,
+        <span class="ruby-value str">'oauth_version'</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value str">'1.0'</span>,
+      }
+      <span class="ruby-ivar">@params</span>[<span class="ruby-value str">'oauth_consumer_key'</span>] = <span class="ruby-identifier">credentials</span>.<span class="ruby-identifier">consumer_key</span>
+      <span class="ruby-ivar">@params</span>[<span class="ruby-value str">'oauth_token'</span>] = <span class="ruby-identifier">credentials</span>.<span class="ruby-identifier">access_token</span>.<span class="ruby-identifier">token</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">credentials</span>.<span class="ruby-identifier">access_token</span>
+      <span class="ruby-ivar">@consumer_secret</span> = <span class="ruby-identifier">credentials</span>.<span class="ruby-identifier">consumer_secret</span>
+      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">credentials</span>.<span class="ruby-identifier">access_token</span>
+        <span class="ruby-ivar">@access_secret</span> = <span class="ruby-identifier">credentials</span>.<span class="ruby-identifier">access_token</span>.<span class="ruby-identifier">secret</span> 
+      <span class="ruby-keyword kw">else</span>
+        <span class="ruby-ivar">@access_secret</span> = <span class="ruby-keyword kw">nil</span>
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-ivar">@method</span> = <span class="ruby-identifier">method</span>.<span class="ruby-identifier">upcase</span>
+      <span class="ruby-ivar">@url</span> = <span class="ruby-identifier">url</span>
+    <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="sectiontitle">Instance Public methods</div>
+            
+            <div class="method">
+                <div class="title" id="M000009">
+                    
+                    <a name="M000009"></a><b>[]=</b>(param,value)
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Sets a request parameter
+</p>
+<table>
+<tr><td valign="top"><tt>param</tt>:</td><td>the name of the parameter, as a string or symbol
+
+</td></tr>
+<tr><td valign="top"><tt>value</tt>:</td><td>the value of the parameter, unencoded
+
+</td></tr>
+</table>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('M000009_source')" id="l_M000009_source">show</a>
+                        
+                    </p>
+                    <div id="M000009_source" class="dyn-source">
+                        <pre><span class="ruby-comment cmt"># File lib/crazylegs/url.rb, line 79</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-operator">[]=</span>(<span class="ruby-identifier">param</span>,<span class="ruby-identifier">value</span>)
+      <span class="ruby-identifier">raise</span> <span class="ruby-constant">ArgumentError</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value str">&quot;param may not be nil&quot;</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">param</span>.<span class="ruby-identifier">nil?</span>
+      <span class="ruby-identifier">param</span> = <span class="ruby-identifier">param</span>.<span class="ruby-identifier">to_s</span>
+      <span class="ruby-identifier">raise</span> <span class="ruby-constant">ArgumentError</span>.<span class="ruby-identifier">new</span>(<span class="ruby-node">&quot;You may not override #{param}&quot;</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-constant">READ_ONLY_PARAMS</span>[<span class="ruby-identifier">param</span>]
+      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">nil?</span> 
+        <span class="ruby-ivar">@params</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">param</span>)
+      <span class="ruby-keyword kw">else</span>
+        <span class="ruby-ivar">@params</span>[<span class="ruby-identifier">param</span>] = <span class="ruby-identifier">value</span>.<span class="ruby-identifier">to_s</span>
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="M000011">
+                    
+                    <a name="M000011"></a><b>full_url</b>(timestamp=nil,nonce=nil)
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Gets the full URL, signed and ready to be requested +timestamp::+ the
+timestamp to use; defaults to &#8216;now&#8217; and generally is only
+visible for testing <tt>nonce</tt> the nonce to use; defaults to a
+reasonable value and generally is only visible for testing
+</p>
+<p>
+Returns a String that is the entire encoded OAuth-compliant URL ready to be
+requested. Note that part of the OAuth signing process is to include the
+HTTP request method; if you request this url using a method other than the
+one you passed to the constructor, it will not work.
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('M000011_source')" id="l_M000011_source">show</a>
+                        
+                    </p>
+                    <div id="M000011_source" class="dyn-source">
+                        <pre><span class="ruby-comment cmt"># File lib/crazylegs/url.rb, line 107</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">full_url</span>(<span class="ruby-identifier">timestamp</span>=<span class="ruby-keyword kw">nil</span>,<span class="ruby-identifier">nonce</span>=<span class="ruby-keyword kw">nil</span>)
+
+      <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-node">&quot;Getting full_url of #{@url}&quot;</span>)
+      <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-node">&quot;OAuth Part 1 : #{@method}&quot;</span>)
+
+      <span class="ruby-identifier">escaped_url</span> = <span class="ruby-constant">SignedURL</span><span class="ruby-operator">::</span><span class="ruby-identifier">encode</span>(<span class="ruby-ivar">@url</span>)
+      <span class="ruby-identifier">to_sign</span> = <span class="ruby-ivar">@method</span> <span class="ruby-operator">+</span> <span class="ruby-value str">&quot;&amp;&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">escaped_url</span> <span class="ruby-operator">+</span> <span class="ruby-value str">&quot;&amp;&quot;</span>
+
+      <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-node">&quot;OAuth Part 2 (raw) : #{@url}&quot;</span>)
+      <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-node">&quot;OAuth Part 2 (esc) : #{escaped_url}&quot;</span>)
+
+      <span class="ruby-identifier">timestamp</span>=<span class="ruby-constant">Time</span>.<span class="ruby-identifier">now</span>.<span class="ruby-identifier">to_i</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">timestamp</span>.<span class="ruby-identifier">nil?</span>
+      <span class="ruby-identifier">nonce</span>=<span class="ruby-ivar">@credentials</span>.<span class="ruby-identifier">nonce</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">nonce</span>.<span class="ruby-identifier">nil?</span>
+
+      <span class="ruby-identifier">param_part</span>,<span class="ruby-identifier">url_params</span> = <span class="ruby-identifier">handle_params</span>(<span class="ruby-identifier">timestamp</span>,<span class="ruby-identifier">nonce</span>)
+      <span class="ruby-identifier">escaped_params</span> = <span class="ruby-constant">SignedURL</span><span class="ruby-operator">::</span><span class="ruby-identifier">encode</span>(<span class="ruby-identifier">param_part</span>)
+      <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-node">&quot;OAuth Part 3 (raw) : #{param_part}&quot;</span>)
+      <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-node">&quot;OAuth Part 3 (esc) : #{escaped_params}&quot;</span>)
+
+      <span class="ruby-identifier">to_sign</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">escaped_params</span>
+
+      <span class="ruby-identifier">signature</span> = <span class="ruby-identifier">get_signature</span>(<span class="ruby-identifier">to_sign</span>)
+
+      <span class="ruby-identifier">url_params</span>[<span class="ruby-value str">'oauth_signature'</span>] = <span class="ruby-constant">SignedURL</span><span class="ruby-operator">::</span><span class="ruby-identifier">encode</span>(<span class="ruby-identifier">signature</span>)
+
+      <span class="ruby-identifier">assembled_url</span> = <span class="ruby-identifier">assemble_url</span>(<span class="ruby-identifier">url_params</span>)
+      <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-value str">&quot;Full URL is &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">assembled_url</span>)
+      <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">assembled_url</span>
+    <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="M000010">
+                    
+                    <a name="M000010"></a><b>params=</b>(params_hash)
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Sets all request parameters to those in the hash.
+</p>
+<table>
+<tr><td valign="top"><tt>params_hash</tt>:</td><td>hash of all the parameters you want to add; will replace existing
+parameters
+
+</td></tr>
+</table>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('M000010_source')" id="l_M000010_source">show</a>
+                        
+                    </p>
+                    <div id="M000010_source" class="dyn-source">
+                        <pre><span class="ruby-comment cmt"># File lib/crazylegs/url.rb, line 93</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">params=</span>(<span class="ruby-identifier">params_hash</span>)
+      <span class="ruby-identifier">raise</span> <span class="ruby-constant">ArgumentError</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value str">'you may not set params to nil'</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">params_hash</span>.<span class="ruby-identifier">nil?</span>
+      <span class="ruby-identifier">params_hash</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">k</span>,<span class="ruby-identifier">v</span><span class="ruby-operator">|</span>
+        <span class="ruby-keyword kw">self</span>[<span class="ruby-identifier">k</span>]=<span class="ruby-identifier">v</span>
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+</div>
+    </div>
+  </body>
+</html>    
