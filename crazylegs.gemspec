@@ -22,6 +22,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency('rdoc')
   s.add_development_dependency('rake')
   s.add_development_dependency('rcov')
-  s.add_dependency('ruby-hmac', '>= 0.4.0')
-  s.add_dependency('httparty')
+  s.add_development_dependency('grancher','~> 0.1.5')
+  s.add_dependency('ruby-hmac', '~> 0.4.0')
 end

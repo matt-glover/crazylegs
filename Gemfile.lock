@@ -2,16 +2,17 @@ PATH
   remote: .
   specs:
     crazylegs (0.0.1)
-      httparty
-      ruby-hmac (>= 0.4.0)
+      ruby-hmac (~> 0.4.0)
 
 GEM
   remote: http://rubygems.org/
   specs:
-    crack (0.1.8)
-    httparty (0.7.7)
-      crack (= 0.1.8)
+    gash (0.1.3)
+      open4 (>= 0, = 0.9.6)
+    grancher (0.1.5)
+      gash
     json (1.5.1)
+    open4 (0.9.6)
     rake (0.8.7)
     rcov (0.9.9)
     rdoc (2.4.3)
@@ -25,6 +26,7 @@ PLATFORMS
 
 DEPENDENCIES
   crazylegs!
+  grancher (~> 0.1.5)
   rake
   rcov
   rdoc

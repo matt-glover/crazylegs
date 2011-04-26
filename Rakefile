@@ -5,6 +5,15 @@ require 'rake/gempackagetask'
 require 'rake/rdoctask'
 require 'rcov/rcovtask'
 require 'sdoc'
+require 'grancher/task'
+require 'rake/testtask'
+
+Grancher::Task.new do |g|
+  g.branch = 'gh-pages'
+  g.push_to = 'origin'
+  g.directory 'html'
+end
+
 
 Rake::RDocTask.new(:rdoc) do |rd|
   rd.main = "README.rdoc"
@@ -14,7 +23,6 @@ Rake::RDocTask.new(:rdoc) do |rd|
   rd.title = 'crazylegs'
 end
 
-require 'rake/testtask'
 Rake::TestTask.new do |t|
   t.libs << "test"
   t.test_files = FileList['test/tc_*.rb']
@@ -37,3 +45,6 @@ end
 task :default => :test
 
 Bundler::GemHelper.install_tasks
+
+desc 'Publish rdoc on github pages and push to github'
+task :publish_rdoc => [:rdoc,:publish]
