@@ -1,7 +1,7 @@
 = Crazylegs - the hacky 2-legged OAuth Library
 
 Author::  Dave Copeland (mailto:dave@opower.com)
-Copyright:: Copyright (c) 2010 by Dave Copeland
+Copyright:: Copyright (c) 2011 by Dave Copeland
 License:: Distributes under the Apache License, see LICENSE.txt in the source distro
 
 == Use
