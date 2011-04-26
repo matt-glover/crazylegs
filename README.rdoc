@@ -1,0 +1,29 @@
+= Crazylegs - the hacky 2-legged OAuth Library
+
+Author::  Dave Copeland (mailto:dave@opower.com)
+Copyright:: Copyright (c) 2010 by Dave Copeland
+License:: Distributes under the Apache License, see LICENSE.txt in the source distro
+
+== Use
+
+Install if you need to:
+
+    gem install gli
+
+== Example
+
+    include Crazylegs
+    credentials = Credentials.new(consumer_key,shared_secret)
+    url = SignedURL.new(credentials,"http://scrapi-demo-dev.opower.com/api/customers",'GET')
+    url['accountNumber'] = '655321'
+    signed_url = url.full_url
+    # signed_url can now be requested of the remote server
+
+=== Seeing WTF is going on
+
+
+    logger = Logger.new(STDERR)
+    logger.level = Logger::DEBUG
+    url = SignedURL.new(credentials,"http://scrapi-demo-dev.opower.com/api/customers",'GET',logger)
+
+
