@@ -6,6 +6,9 @@ License:: Distributes under the Apache License, see LICENSE.txt in the source di
 
 Crazylegs is a *very* small library to sign urls for two-legged OAuth.  This will not request urls for you, it will not parse a response for you, it will not give you some crazy DSL to abstract away the details.  It *will* properly sign a URL using a consumer key and secret so that you can make an OAuth request for 2-legged auth.  That's it.
 
+* {Source on Github}[https://github.com/opower/crazylegs]
+* RDoc[http://rdoc.info/github/opower/crazylegs/master/frames]
+
 == Use
 
 Install if you need to:
