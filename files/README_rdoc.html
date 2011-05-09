@@ -19,7 +19,7 @@
         </h1>
         <ul class="files">
             <li>README.rdoc</li>
-            <li>Last modified: Tue Apr 26 16:10:18 -0400 2011</li>
+            <li>Last modified: Mon May 09 16:27:09 -0400 2011</li>
         </ul>
     </div>
 
@@ -32,13 +32,21 @@
 <tr><td valign="top">Author:</td><td>Dave Copeland (<a href="mailto:dave@opower.com">dave@opower.com</a>)
 
 </td></tr>
-<tr><td valign="top">Copyright:</td><td>Copyright &#169; 2010 by Dave Copeland
+<tr><td valign="top">Copyright:</td><td>Copyright &#169; 2011 by Dave Copeland
 
 </td></tr>
 <tr><td valign="top">License:</td><td>Distributes under the Apache License, see LICENSE.txt in the source distro
 
 </td></tr>
 </table>
+<p>
+<a href="../classes/Crazylegs.html">Crazylegs</a> is a <b>very</b> small
+library to sign urls for two-legged OAuth. This will not request urls for
+you, it will not parse a response for you, it will not give you some crazy
+DSL to abstract away the details. It <b>will</b> properly sign a URL using
+a consumer key and secret so that you can make an OAuth request for
+2-legged auth. That&#8217;s it.
+</p>
 <h2>Use</h2>
 <p>
 Install if you need to:
@@ -55,6 +63,12 @@ Install if you need to:
     signed_url = url.full_url
     # signed_url can now be requested of the remote server
 </pre>
+<p>
+See <a href="../classes/Crazylegs/SignedURL.html">Crazylegs::SignedURL</a>
+and <a
+href="../classes/Crazylegs/Credentials.html">Crazylegs::Credentials</a> for
+more info.
+</p>
 <h3>Seeing WTF is going on</h3>
 <pre>
     logger = Logger.new(STDERR)
