@@ -19,19 +19,19 @@ module Crazylegs
 
     # Encodes each part of this url, accounting for some
     # of the weirdness we are dealing with
-    def self.encodeParts(url)
+    def self.encode_parts(url)
       parts = url.split(/\//).map do |part|
         if part =~ /^\$/
           part
         else
-          encode(part)
+          url_encode(part)
         end
       end
       parts.join('/')
     end
 
     # Ruby's CGI::encode doesn't encode spaces correctly
-    def self.encode(string)
+    def self.url_encode(string)
       string.gsub(/([^ a-zA-Z0-9_.-]+)/n) do
         '%' + $1.unpack('H2' * $1.size).join('%').upcase
       end.gsub(' ', '%20')
@@ -55,12 +55,13 @@ module Crazylegs
 
       @logger = logger || $logger || Logger.new(STDOUT)
 
-      @params = {
+      @oauth_params = {
         'oauth_signature_method' => 'HMAC-SHA1',
         'oauth_version' => '1.0',
       }
-      @params['oauth_consumer_key'] = credentials.consumer_key
-      @params['oauth_token'] = credentials.access_token.token if credentials.access_token
+      @oauth_params['oauth_consumer_key'] = credentials.consumer_key
+      @oauth_params['oauth_token'] = credentials.access_token.token if credentials.access_token
+      @params = {}
       @consumer_secret = credentials.consumer_secret
       if credentials.access_token
         @access_secret = credentials.access_token.secret 
@@ -105,11 +106,52 @@ module Crazylegs
     # part of the OAuth signing process is to include the HTTP request method; if you request this url
     # using a method other than the one you passed to the constructor, it will not work.
     def full_url(timestamp=nil,nonce=nil)
+      query_string_params,oauth_params = get_query_and_oauth_parameters(timestamp,nonce)
+      oauth_params = escape_param_values(oauth_params)
+
+      assembled_url = assemble_url(query_string_params.merge(oauth_params))
+      @logger.debug("Full URL is " + assembled_url)
+      return assembled_url
+    end
+
+    # Gets the full URL, signed and ready to be requested using the 
+    # Authorization header style.  As such, all of the parameters needed for OAuth
+    # are *not* part of the url returned here, instead you get the url and the
+    # headers needed to make the full request
+    #
+    # +timestamp::+ the timestamp to use; defaults to 'now' and generally is only visible for testing
+    # +nonce+ the nonce to use; defaults to a reasonable value and generally is only visible for testing
+    #
+    # Returns an array of size two:
+    # 0:: the url to request, as a String
+    # 1:: the headers, as a Hash of String to String, to use with the request; without using these
+    #     headers, the request will surely fail.
+    def full_url_using_headers(timestamp=nil,nonce=nil)
+      @logger.debug("Getting full_url for header-based request of #{@url}")
+      query_string_params,oauth_params = get_query_and_oauth_parameters(timestamp,nonce)
+      assembled_url = assemble_url(query_string_params)
+      oauth_headers = {
+        'Authorization' => 'OAuth ' + oauth_params.to_a.sort.map { |param| "#{param[0]}=\"#{param[1]}\"" }.join(',')
+      }
+      return [assembled_url,oauth_headers]
+    end
+
+    private
+
+    def escape_param_values(params)
+      escaped = {}
+      params.each do |key,value|
+        escaped[key] = SignedURL::url_encode(value)
+      end
+      escaped
+    end
+
+    def get_query_and_oauth_parameters(timestamp=nil,nonce=nil)
 
       @logger.debug("Getting full_url of #{@url}")
       @logger.debug("OAuth Part 1 : #{@method}")
 
-      escaped_url = SignedURL::encode(@url)
+      escaped_url = SignedURL::url_encode(@url)
       to_sign = @method + "&" + escaped_url + "&"
 
       @logger.debug("OAuth Part 2 (raw) : #{@url}")
@@ -118,8 +160,8 @@ module Crazylegs
       timestamp=Time.now.to_i if timestamp.nil?
       nonce=@credentials.nonce if nonce.nil?
 
-      param_part,url_params = handle_params(timestamp,nonce)
-      escaped_params = SignedURL::encode(param_part)
+      param_part,url_params,oauth_params = handle_params(timestamp,nonce)
+      escaped_params = SignedURL::url_encode(param_part)
       @logger.debug("OAuth Part 3 (raw) : #{param_part}")
       @logger.debug("OAuth Part 3 (esc) : #{escaped_params}")
 
@@ -127,19 +169,20 @@ module Crazylegs
 
       signature = get_signature(to_sign)
 
-      url_params['oauth_signature'] = SignedURL::encode(signature)
+      oauth_params['oauth_signature'] = signature
 
-      assembled_url = assemble_url(url_params)
-      @logger.debug("Full URL is " + assembled_url)
-      return assembled_url
+      [url_params,oauth_params]
     end
 
-    private
-
-    def assemble_url(url_params)
+    # Appends the params to the @url in sorted order
+    #
+    # +params+:: hash of params, String => String
+    #
+    # Returns a url that is the full url with these query string parameters
+    def assemble_url(params)
       url = @url + '?'
-      url_params.keys.sort.each do |key|
-        val = url_params[key]
+      params.keys.sort.each do |key|
+        val = params[key]
         url += "#{key}=#{val}&"
       end
       url.gsub!(/\&$/,'')
@@ -159,28 +202,35 @@ module Crazylegs
     end
 
     def get_signing_key
-      SignedURL::encode(@consumer_secret) + "&" + SignedURL::encode(@access_secret.nil? ? "" : @access_secret)
+      SignedURL::url_encode(@consumer_secret) + "&" + SignedURL::url_encode(@access_secret.nil? ? "" : @access_secret)
     end
 
+    # This method is horrible and needs refactoring
     def handle_params(timestamp,nonce)
-      url_params = Hash.new
+      url_params = {}
       param_part = ""
-      params = @params
-      params['oauth_timestamp'] = timestamp.to_s
-      params['oauth_nonce'] = nonce
+      params = @params.clone
+      oauth_params = @oauth_params.clone
+      oauth_params['oauth_timestamp'] = timestamp.to_s
+      oauth_params['oauth_nonce'] = nonce
+      params.merge!(oauth_params)
       params.keys.sort.each do |key|
         value = params[key]
         raise ArgumentError.new("#{key} is nil; don't set params to be nil") if value.nil?
         
-        @logger.debug("Adding param #{key} with value #{value} escaped as #{SignedURL::encode(value)}")
-        param_part += SignedURL::encode(key)
+        @logger.debug("Adding param #{key} with value #{value} escaped as #{SignedURL::url_encode(value)}")
+        param_part += SignedURL::url_encode(key)
         param_part += "="
-        param_part += SignedURL::encode(value)
+        param_part += SignedURL::url_encode(value)
         param_part += '&'
-        url_params[key] = SignedURL::encode(value)
+        if oauth_params[key]
+          oauth_params[key] = value
+        else
+          url_params[key] = SignedURL::url_encode(value)
+        end
       end
       param_part.gsub!(/&$/,'')
-      [param_part,url_params]
+      [param_part,url_params,oauth_params]
     end
   end
 end
