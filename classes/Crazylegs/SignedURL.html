@@ -65,9 +65,7 @@ Used to create OAuth-signed URLs that you can then request via other means.
         <dd>
             <ul>
                 
-                <li><a href="#M000007">encode</a>,</li>
-                
-                <li><a href="#M000006">encodeParts</a></li>
+                <li><a href="#M000006">encode_parts</a></li>
                 
             </ul>
         </dd>
@@ -76,7 +74,9 @@ Used to create OAuth-signed URLs that you can then request via other means.
         <dd>
             <ul>
                 
-                <li><a href="#M000011">full_url</a></li>
+                <li><a href="#M000011">full_url</a>,</li>
+                
+                <li><a href="#M000012">full_url_using_headers</a></li>
                 
             </ul>
         </dd>
@@ -95,6 +95,15 @@ Used to create OAuth-signed URLs that you can then request via other means.
             <ul>
                 
                 <li><a href="#M000010">params=</a></li>
+                
+            </ul>
+        </dd>
+    
+        <dt>U</dt>
+        <dd>
+            <ul>
+                
+                <li><a href="#M000007">url_encode</a></li>
                 
             </ul>
         </dd>
@@ -143,43 +152,9 @@ Modify the logger
             <div class="sectiontitle">Class Public methods</div>
             
             <div class="method">
-                <div class="title" id="M000007">
-                    
-                    <a name="M000007"></a><b>encode</b>(string)
-                    
-                </div>
-                
-                <div class="description">
-                  <p>
-Ruby&#8217;s CGI::encode doesn&#8217;t encode spaces correctly
-</p>
-
-                </div>
-                
-                
-                
-                
-                <div class="sourcecode">
-                    <p class="source-link">
-                        Source: <a href="javascript:toggleSource('M000007_source')" id="l_M000007_source">show</a>
-                        
-                    </p>
-                    <div id="M000007_source" class="dyn-source">
-                        <pre><span class="ruby-comment cmt"># File lib/crazylegs/url.rb, line 34</span>
-    <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">encode</span>(<span class="ruby-identifier">string</span>)
-      <span class="ruby-identifier">string</span>.<span class="ruby-identifier">gsub</span>(<span class="ruby-regexp re">/([^ a-zA-Z0-9_.-]+)/n</span>) <span class="ruby-keyword kw">do</span>
-        <span class="ruby-value str">'%'</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">$1</span>.<span class="ruby-identifier">unpack</span>(<span class="ruby-value str">'H2'</span> <span class="ruby-operator">*</span> <span class="ruby-identifier">$1</span>.<span class="ruby-identifier">size</span>).<span class="ruby-identifier">join</span>(<span class="ruby-value str">'%'</span>).<span class="ruby-identifier">upcase</span>
-      <span class="ruby-keyword kw">end</span>.<span class="ruby-identifier">gsub</span>(<span class="ruby-value str">' '</span>, <span class="ruby-value str">'%20'</span>)
-    <span class="ruby-keyword kw">end</span></pre>
-                    </div>
-                </div>
-                
-            </div>
-            
-            <div class="method">
                 <div class="title" id="M000006">
                     
-                    <a name="M000006"></a><b>encodeParts</b>(url)
+                    <a name="M000006"></a><b>encode_parts</b>(url)
                     
                 </div>
                 
@@ -198,15 +173,17 @@ dealing with
                     <p class="source-link">
                         Source: <a href="javascript:toggleSource('M000006_source')" id="l_M000006_source">show</a>
                         
+                        | <a href="http://github.com/opower/crazylegs/blob/3370c29a520d754e8675f666cd93562e3fc14b59/lib/crazylegs/url.rb#L22" target="_blank" class="github_url">on GitHub</a>
+                        
                     </p>
                     <div id="M000006_source" class="dyn-source">
                         <pre><span class="ruby-comment cmt"># File lib/crazylegs/url.rb, line 22</span>
-    <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">encodeParts</span>(<span class="ruby-identifier">url</span>)
+    <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">encode_parts</span>(<span class="ruby-identifier">url</span>)
       <span class="ruby-identifier">parts</span> = <span class="ruby-identifier">url</span>.<span class="ruby-identifier">split</span>(<span class="ruby-regexp re">/\//</span>).<span class="ruby-identifier">map</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">part</span><span class="ruby-operator">|</span>
         <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">part</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp re">/^\$/</span>
           <span class="ruby-identifier">part</span>
         <span class="ruby-keyword kw">else</span>
-          <span class="ruby-identifier">encode</span>(<span class="ruby-identifier">part</span>)
+          <span class="ruby-identifier">url_encode</span>(<span class="ruby-identifier">part</span>)
         <span class="ruby-keyword kw">end</span>
       <span class="ruby-keyword kw">end</span>
       <span class="ruby-identifier">parts</span>.<span class="ruby-identifier">join</span>(<span class="ruby-value str">'/'</span>)
@@ -253,6 +230,8 @@ request
                     <p class="source-link">
                         Source: <a href="javascript:toggleSource('M000008_source')" id="l_M000008_source">show</a>
                         
+                        | <a href="http://github.com/opower/crazylegs/blob/3370c29a520d754e8675f666cd93562e3fc14b59/lib/crazylegs/url.rb#L49" target="_blank" class="github_url">on GitHub</a>
+                        
                     </p>
                     <div id="M000008_source" class="dyn-source">
                         <pre><span class="ruby-comment cmt"># File lib/crazylegs/url.rb, line 49</span>
@@ -265,12 +244,13 @@ request
 
       <span class="ruby-ivar">@logger</span> = <span class="ruby-identifier">logger</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">$logger</span> <span class="ruby-operator">||</span> <span class="ruby-constant">Logger</span>.<span class="ruby-identifier">new</span>(<span class="ruby-constant">STDOUT</span>)
 
-      <span class="ruby-ivar">@params</span> = {
+      <span class="ruby-ivar">@oauth_params</span> = {
         <span class="ruby-value str">'oauth_signature_method'</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value str">'HMAC-SHA1'</span>,
         <span class="ruby-value str">'oauth_version'</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value str">'1.0'</span>,
       }
-      <span class="ruby-ivar">@params</span>[<span class="ruby-value str">'oauth_consumer_key'</span>] = <span class="ruby-identifier">credentials</span>.<span class="ruby-identifier">consumer_key</span>
-      <span class="ruby-ivar">@params</span>[<span class="ruby-value str">'oauth_token'</span>] = <span class="ruby-identifier">credentials</span>.<span class="ruby-identifier">access_token</span>.<span class="ruby-identifier">token</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">credentials</span>.<span class="ruby-identifier">access_token</span>
+      <span class="ruby-ivar">@oauth_params</span>[<span class="ruby-value str">'oauth_consumer_key'</span>] = <span class="ruby-identifier">credentials</span>.<span class="ruby-identifier">consumer_key</span>
+      <span class="ruby-ivar">@oauth_params</span>[<span class="ruby-value str">'oauth_token'</span>] = <span class="ruby-identifier">credentials</span>.<span class="ruby-identifier">access_token</span>.<span class="ruby-identifier">token</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">credentials</span>.<span class="ruby-identifier">access_token</span>
+      <span class="ruby-ivar">@params</span> = {}
       <span class="ruby-ivar">@consumer_secret</span> = <span class="ruby-identifier">credentials</span>.<span class="ruby-identifier">consumer_secret</span>
       <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">credentials</span>.<span class="ruby-identifier">access_token</span>
         <span class="ruby-ivar">@access_secret</span> = <span class="ruby-identifier">credentials</span>.<span class="ruby-identifier">access_token</span>.<span class="ruby-identifier">secret</span> 
@@ -279,6 +259,42 @@ request
       <span class="ruby-keyword kw">end</span>
       <span class="ruby-ivar">@method</span> = <span class="ruby-identifier">method</span>.<span class="ruby-identifier">upcase</span>
       <span class="ruby-ivar">@url</span> = <span class="ruby-identifier">url</span>
+    <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="M000007">
+                    
+                    <a name="M000007"></a><b>url_encode</b>(string)
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Ruby&#8217;s CGI::encode doesn&#8217;t encode spaces correctly
+</p>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('M000007_source')" id="l_M000007_source">show</a>
+                        
+                        | <a href="http://github.com/opower/crazylegs/blob/3370c29a520d754e8675f666cd93562e3fc14b59/lib/crazylegs/url.rb#L34" target="_blank" class="github_url">on GitHub</a>
+                        
+                    </p>
+                    <div id="M000007_source" class="dyn-source">
+                        <pre><span class="ruby-comment cmt"># File lib/crazylegs/url.rb, line 34</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">url_encode</span>(<span class="ruby-identifier">string</span>)
+      <span class="ruby-identifier">string</span>.<span class="ruby-identifier">gsub</span>(<span class="ruby-regexp re">/([^ a-zA-Z0-9_.-]+)/n</span>) <span class="ruby-keyword kw">do</span>
+        <span class="ruby-value str">'%'</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">$1</span>.<span class="ruby-identifier">unpack</span>(<span class="ruby-value str">'H2'</span> <span class="ruby-operator">*</span> <span class="ruby-identifier">$1</span>.<span class="ruby-identifier">size</span>).<span class="ruby-identifier">join</span>(<span class="ruby-value str">'%'</span>).<span class="ruby-identifier">upcase</span>
+      <span class="ruby-keyword kw">end</span>.<span class="ruby-identifier">gsub</span>(<span class="ruby-value str">' '</span>, <span class="ruby-value str">'%20'</span>)
     <span class="ruby-keyword kw">end</span></pre>
                     </div>
                 </div>
@@ -316,9 +332,11 @@ Sets a request parameter
                     <p class="source-link">
                         Source: <a href="javascript:toggleSource('M000009_source')" id="l_M000009_source">show</a>
                         
+                        | <a href="http://github.com/opower/crazylegs/blob/3370c29a520d754e8675f666cd93562e3fc14b59/lib/crazylegs/url.rb#L80" target="_blank" class="github_url">on GitHub</a>
+                        
                     </p>
                     <div id="M000009_source" class="dyn-source">
-                        <pre><span class="ruby-comment cmt"># File lib/crazylegs/url.rb, line 79</span>
+                        <pre><span class="ruby-comment cmt"># File lib/crazylegs/url.rb, line 80</span>
     <span class="ruby-keyword kw">def</span> <span class="ruby-operator">[]=</span>(<span class="ruby-identifier">param</span>,<span class="ruby-identifier">value</span>)
       <span class="ruby-identifier">raise</span> <span class="ruby-constant">ArgumentError</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value str">&quot;param may not be nil&quot;</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">param</span>.<span class="ruby-identifier">nil?</span>
       <span class="ruby-identifier">param</span> = <span class="ruby-identifier">param</span>.<span class="ruby-identifier">to_s</span>
@@ -364,37 +382,78 @@ one you passed to the constructor, it will not work.
                     <p class="source-link">
                         Source: <a href="javascript:toggleSource('M000011_source')" id="l_M000011_source">show</a>
                         
+                        | <a href="http://github.com/opower/crazylegs/blob/3370c29a520d754e8675f666cd93562e3fc14b59/lib/crazylegs/url.rb#L108" target="_blank" class="github_url">on GitHub</a>
+                        
                     </p>
                     <div id="M000011_source" class="dyn-source">
-                        <pre><span class="ruby-comment cmt"># File lib/crazylegs/url.rb, line 107</span>
+                        <pre><span class="ruby-comment cmt"># File lib/crazylegs/url.rb, line 108</span>
     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">full_url</span>(<span class="ruby-identifier">timestamp</span>=<span class="ruby-keyword kw">nil</span>,<span class="ruby-identifier">nonce</span>=<span class="ruby-keyword kw">nil</span>)
+      <span class="ruby-identifier">query_string_params</span>,<span class="ruby-identifier">oauth_params</span> = <span class="ruby-identifier">get_query_and_oauth_parameters</span>(<span class="ruby-identifier">timestamp</span>,<span class="ruby-identifier">nonce</span>)
+      <span class="ruby-identifier">oauth_params</span> = <span class="ruby-identifier">escape_param_values</span>(<span class="ruby-identifier">oauth_params</span>)
 
-      <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-node">&quot;Getting full_url of #{@url}&quot;</span>)
-      <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-node">&quot;OAuth Part 1 : #{@method}&quot;</span>)
-
-      <span class="ruby-identifier">escaped_url</span> = <span class="ruby-constant">SignedURL</span><span class="ruby-operator">::</span><span class="ruby-identifier">encode</span>(<span class="ruby-ivar">@url</span>)
-      <span class="ruby-identifier">to_sign</span> = <span class="ruby-ivar">@method</span> <span class="ruby-operator">+</span> <span class="ruby-value str">&quot;&amp;&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">escaped_url</span> <span class="ruby-operator">+</span> <span class="ruby-value str">&quot;&amp;&quot;</span>
-
-      <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-node">&quot;OAuth Part 2 (raw) : #{@url}&quot;</span>)
-      <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-node">&quot;OAuth Part 2 (esc) : #{escaped_url}&quot;</span>)
-
-      <span class="ruby-identifier">timestamp</span>=<span class="ruby-constant">Time</span>.<span class="ruby-identifier">now</span>.<span class="ruby-identifier">to_i</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">timestamp</span>.<span class="ruby-identifier">nil?</span>
-      <span class="ruby-identifier">nonce</span>=<span class="ruby-ivar">@credentials</span>.<span class="ruby-identifier">nonce</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">nonce</span>.<span class="ruby-identifier">nil?</span>
-
-      <span class="ruby-identifier">param_part</span>,<span class="ruby-identifier">url_params</span> = <span class="ruby-identifier">handle_params</span>(<span class="ruby-identifier">timestamp</span>,<span class="ruby-identifier">nonce</span>)
-      <span class="ruby-identifier">escaped_params</span> = <span class="ruby-constant">SignedURL</span><span class="ruby-operator">::</span><span class="ruby-identifier">encode</span>(<span class="ruby-identifier">param_part</span>)
-      <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-node">&quot;OAuth Part 3 (raw) : #{param_part}&quot;</span>)
-      <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-node">&quot;OAuth Part 3 (esc) : #{escaped_params}&quot;</span>)
-
-      <span class="ruby-identifier">to_sign</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">escaped_params</span>
-
-      <span class="ruby-identifier">signature</span> = <span class="ruby-identifier">get_signature</span>(<span class="ruby-identifier">to_sign</span>)
-
-      <span class="ruby-identifier">url_params</span>[<span class="ruby-value str">'oauth_signature'</span>] = <span class="ruby-constant">SignedURL</span><span class="ruby-operator">::</span><span class="ruby-identifier">encode</span>(<span class="ruby-identifier">signature</span>)
-
-      <span class="ruby-identifier">assembled_url</span> = <span class="ruby-identifier">assemble_url</span>(<span class="ruby-identifier">url_params</span>)
+      <span class="ruby-identifier">assembled_url</span> = <span class="ruby-identifier">assemble_url</span>(<span class="ruby-identifier">query_string_params</span>.<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">oauth_params</span>))
       <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-value str">&quot;Full URL is &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">assembled_url</span>)
       <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">assembled_url</span>
+    <span class="ruby-keyword kw">end</span></pre>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="method">
+                <div class="title" id="M000012">
+                    
+                    <a name="M000012"></a><b>full_url_using_headers</b>(timestamp=nil,nonce=nil)
+                    
+                </div>
+                
+                <div class="description">
+                  <p>
+Gets the full URL, signed and ready to be requested using the Authorization
+header style. As such, all of the parameters needed for OAuth are
+<b>not</b> part of the url returned here, instead you get the url and the
+headers needed to make the full request
+</p>
+<p>
++timestamp::+ the timestamp to use; defaults to &#8216;now&#8217; and
+generally is only visible for testing <tt>nonce</tt> the nonce to use;
+defaults to a reasonable value and generally is only visible for testing
+</p>
+<p>
+Returns an array of size two:
+</p>
+<table>
+<tr><td valign="top">0:</td><td>the url to request, as a String
+
+</td></tr>
+<tr><td valign="top">1:</td><td>the headers, as a Hash of String to String, to use with the request;
+without using these headers, the request will surely fail.
+
+</td></tr>
+</table>
+
+                </div>
+                
+                
+                
+                
+                <div class="sourcecode">
+                    <p class="source-link">
+                        Source: <a href="javascript:toggleSource('M000012_source')" id="l_M000012_source">show</a>
+                        
+                        | <a href="http://github.com/opower/crazylegs/blob/3370c29a520d754e8675f666cd93562e3fc14b59/lib/crazylegs/url.rb#L129" target="_blank" class="github_url">on GitHub</a>
+                        
+                    </p>
+                    <div id="M000012_source" class="dyn-source">
+                        <pre><span class="ruby-comment cmt"># File lib/crazylegs/url.rb, line 129</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">full_url_using_headers</span>(<span class="ruby-identifier">timestamp</span>=<span class="ruby-keyword kw">nil</span>,<span class="ruby-identifier">nonce</span>=<span class="ruby-keyword kw">nil</span>)
+      <span class="ruby-ivar">@logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-node">&quot;Getting full_url for header-based request of #{@url}&quot;</span>)
+      <span class="ruby-identifier">query_string_params</span>,<span class="ruby-identifier">oauth_params</span> = <span class="ruby-identifier">get_query_and_oauth_parameters</span>(<span class="ruby-identifier">timestamp</span>,<span class="ruby-identifier">nonce</span>)
+      <span class="ruby-identifier">assembled_url</span> = <span class="ruby-identifier">assemble_url</span>(<span class="ruby-identifier">query_string_params</span>)
+      <span class="ruby-identifier">oauth_headers</span> = {
+        <span class="ruby-value str">'Authorization'</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-value str">'OAuth '</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">oauth_params</span>.<span class="ruby-identifier">to_a</span>.<span class="ruby-identifier">sort</span>.<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">param</span><span class="ruby-operator">|</span> <span class="ruby-node">&quot;#{param[0]}=\&quot;#{param[1]}\&quot;&quot;</span> }.<span class="ruby-identifier">join</span>(<span class="ruby-value str">','</span>)
+      }
+      <span class="ruby-keyword kw">return</span> [<span class="ruby-identifier">assembled_url</span>,<span class="ruby-identifier">oauth_headers</span>]
     <span class="ruby-keyword kw">end</span></pre>
                     </div>
                 </div>
@@ -428,9 +487,11 @@ parameters
                     <p class="source-link">
                         Source: <a href="javascript:toggleSource('M000010_source')" id="l_M000010_source">show</a>
                         
+                        | <a href="http://github.com/opower/crazylegs/blob/3370c29a520d754e8675f666cd93562e3fc14b59/lib/crazylegs/url.rb#L94" target="_blank" class="github_url">on GitHub</a>
+                        
                     </p>
                     <div id="M000010_source" class="dyn-source">
-                        <pre><span class="ruby-comment cmt"># File lib/crazylegs/url.rb, line 93</span>
+                        <pre><span class="ruby-comment cmt"># File lib/crazylegs/url.rb, line 94</span>
     <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">params=</span>(<span class="ruby-identifier">params_hash</span>)
       <span class="ruby-identifier">raise</span> <span class="ruby-constant">ArgumentError</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value str">'you may not set params to nil'</span>) <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">params_hash</span>.<span class="ruby-identifier">nil?</span>
       <span class="ruby-identifier">params_hash</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">k</span>,<span class="ruby-identifier">v</span><span class="ruby-operator">|</span>

@@ -19,7 +19,7 @@
         </h1>
         <ul class="files">
             <li>README.rdoc</li>
-            <li>Last modified: Mon May 09 16:27:09 -0400 2011</li>
+            <li>Last modified: Thu May 19 13:27:01 -0400 2011</li>
         </ul>
     </div>
 
@@ -47,6 +47,14 @@ DSL to abstract away the details. It <b>will</b> properly sign a URL using
 a consumer key and secret so that you can make an OAuth request for
 2-legged auth. That&#8217;s it.
 </p>
+<ul>
+<li><a href="https://github.com/opower/crazylegs">Source on Github</a>
+
+</li>
+<li><a href="http://rdoc.info/github/opower/crazylegs/master/frames">RDoc</a>
+
+</li>
+</ul>
 <h2>Use</h2>
 <p>
 Install if you need to:
@@ -58,10 +66,15 @@ Install if you need to:
 <pre>
     include Crazylegs
     credentials = Credentials.new(consumer_key,shared_secret)
-    url = SignedURL.new(credentials,&quot;http://scrapi-demo-dev.opower.com/api/customers&quot;,'GET')
+    url = SignedURL.new(credentials,&quot;http://api.example.com/api/customers&quot;,'GET')
     url['accountNumber'] = '655321'
     signed_url = url.full_url
     # signed_url can now be requested of the remote server
+
+    # If you want to use the header-based version
+    url = SignedURL.new(credentials,&quot;http://api.example.com/api/customers/12/address&quot;,'POST')
+    signed_url,headers = url.full_url_using_headers
+    # Now, you can POST signed_url as long as you included headers in your HTTP request
 </pre>
 <p>
 See <a href="../classes/Crazylegs/SignedURL.html">Crazylegs::SignedURL</a>
