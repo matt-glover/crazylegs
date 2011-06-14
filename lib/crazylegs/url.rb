@@ -107,7 +107,6 @@ module Crazylegs
     # using a method other than the one you passed to the constructor, it will not work.
     def full_url(timestamp=nil,nonce=nil)
       query_string_params,oauth_params = get_query_and_oauth_parameters(timestamp,nonce)
-      oauth_params = escape_param_values(oauth_params)
 
       assembled_url = assemble_url(query_string_params.merge(oauth_params))
       @logger.debug("Full URL is " + assembled_url)
@@ -170,6 +169,8 @@ module Crazylegs
       signature = get_signature(to_sign)
 
       oauth_params['oauth_signature'] = signature
+
+      oauth_params = escape_param_values(oauth_params)
 
       [url_params,oauth_params]
     end
