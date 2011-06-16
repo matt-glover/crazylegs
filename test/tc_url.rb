@@ -65,7 +65,7 @@ class TC_testURL < Test::Unit::TestCase
 
   private
   def do_simple_assert
-    signature = 'tR3+Ty81lMeYAr/Fid0kMTYa/WM='
+    # The unencoded signature is 'tR3+Ty81lMeYAr/Fid0kMTYa/WM='
     signature_encoded = 'tR3%2BTy81lMeYAr%2FFid0kMTYa%2FWM%3D'
     expected_url_with_query_string = 'http://photos.example.net/photos?file=vacation.jpg&oauth_consumer_key=dpf43f3p2l4k3l03&oauth_nonce=kllo9940pd9333jh&oauth_signature=' + signature_encoded + '&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1191242096&oauth_token=nnch734d00sl2jdk&oauth_version=1.0&size=original'
     assert_equal(expected_url_with_query_string,@signed_url.full_url(1191242096,'kllo9940pd9333jh'))
@@ -74,7 +74,7 @@ class TC_testURL < Test::Unit::TestCase
     result = @signed_url.full_url_using_headers(1191242096,'kllo9940pd9333jh')
     assert_equal(expected_url_for_headers,result[0])
     expected_headers = {
-      'Authorization' => 'OAuth oauth_consumer_key="dpf43f3p2l4k3l03",oauth_nonce="kllo9940pd9333jh",oauth_signature="' + signature + '",oauth_signature_method="HMAC-SHA1",oauth_timestamp="1191242096",oauth_token="nnch734d00sl2jdk",oauth_version="1.0"'
+      'Authorization' => 'OAuth oauth_consumer_key="dpf43f3p2l4k3l03",oauth_nonce="kllo9940pd9333jh",oauth_signature="' + signature_encoded + '",oauth_signature_method="HMAC-SHA1",oauth_timestamp="1191242096",oauth_token="nnch734d00sl2jdk",oauth_version="1.0"'
     }
     assert_equal(expected_headers,result[1])
   end
